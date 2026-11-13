@@ -3,23 +3,321 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Iron Curtain Racing</title>
-<meta name="description" content="Iron Curtain Racing: a mobile racing game with the cars of the Eastern Bloc.">
+<title>Iron Curtain Racing: race the cars of the Eastern Bloc</title>
+<meta name="description" content="Iron Curtain Racing is a mobile racing game with the cars of the Eastern Bloc: Lada, Volga, Trabant, Wartburg, Dacia, Škoda and more, on six tracks. For iPhone, iPad and Android.">
+<meta property="og:title" content="Iron Curtain Racing">
+<meta property="og:description" content="Comrade, your car is finally here, after only fifteen years on the waiting list. Race the cars of the Eastern Bloc on iPhone and Android.">
+<meta property="og:image" content="https://ironcurtainracing.com/img/hero.jpg">
+<meta property="og:url" content="https://ironcurtainracing.com/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#14110f">
+<link rel="preload" href="fonts/Unbounded-Black.ttf" as="font" type="font/ttf" crossorigin>
 <style>
-  :root { color-scheme: dark; }
-  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #14110f; color: #efe6d6;
-         font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-  main { max-width: 34rem; padding: 2rem; }
-  h1 { margin: 0 0 .75rem; font-size: clamp(2rem, 7vw, 3.25rem); line-height: 1.05; letter-spacing: .02em; text-transform: uppercase; }
-  h1 span { color: #c8372d; }
-  p { margin: 0 0 1rem; font-size: 1.05rem; line-height: 1.55; color: #cfc4b0; }
+@font-face { font-family: "Unbounded"; src: url(fonts/Unbounded-Black.ttf) format("truetype"); font-weight: 900; font-display: swap; }
+@font-face { font-family: "Barlow Condensed"; src: url(fonts/BarlowCondensed-ExtraBoldItalic.ttf) format("truetype"); font-weight: 800; font-style: italic; font-display: swap; }
+@font-face { font-family: "Barlow Condensed"; src: url(fonts/BarlowCondensed-SemiBoldItalic.ttf) format("truetype"); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: "Golos Text"; src: url(fonts/GolosText-Regular.ttf) format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Golos Text"; src: url(fonts/GolosText-SemiBold.ttf) format("truetype"); font-weight: 600; font-display: swap; }
+
+:root {
+  color-scheme: dark;
+  --red: #d0312d; --red-dark: #8f1d1a; --cream: #efe6d6; --paper: #e6dcc7; --ink: #14110f;
+  --muted: #b9ad98;
+  --display: "Unbounded", Impact, sans-serif;
+  --cond: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --body: "Golos Text", -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--ink); color: var(--cream); font: 400 17px/1.6 var(--body); }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+.wrap { width: min(1180px, 100% - 2.5rem); margin-inline: auto; }
+
+/* Grain over everything, as in the game's intro */
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 50;
+  background: url(img/grime.png); opacity: .06; mix-blend-mode: overlay; }
+
+/* Navigation */
+.top { position: fixed; inset: 0 0 auto; z-index: 40; transition: background .3s; }
+.top.solid { background: rgba(20,17,15,.92); backdrop-filter: blur(6px); box-shadow: 0 1px 0 rgba(239,230,214,.08); }
+.top .wrap { display: flex; align-items: center; gap: 2rem; height: 64px; }
+.top .brand { white-space: nowrap; font: 900 15px/1 var(--display); letter-spacing: .02em; text-decoration: none; text-transform: uppercase; }
+.top .brand span { color: var(--red); }
+.top ul { display: flex; gap: 1.6rem; margin: 0 0 0 auto; padding: 0; list-style: none; }
+.top ul a { font: 600 italic 19px/1 var(--cond); text-transform: uppercase; letter-spacing: .04em; text-decoration: none; opacity: .85; }
+.top ul a:hover { opacity: 1; color: var(--red); }
+.top .cta { white-space: nowrap; font: 800 italic 18px/1 var(--cond); text-transform: uppercase; text-decoration: none; background: var(--red);
+  padding: .6rem 1.1rem; clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%); }
+@media (max-width: 820px) { .top ul { display: none; } .top .cta { margin-left: auto; } }
+@media (max-width: 420px) { .top .brand { font-size: 12px; } .feature figure::after { inset: 10px -6px -10px 6px; } .feature.flip figure::after { inset: 10px 6px -10px -6px; } }
+
+/* Hero */
+.hero { position: relative; min-height: 100svh; display: grid; align-items: end; overflow: hidden; }
+.hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg, rgba(20,17,15,.55) 0%, rgba(20,17,15,0) 30%, rgba(20,17,15,.35) 60%, var(--ink) 100%),
+              linear-gradient(90deg, rgba(20,17,15,.75) 0%, rgba(20,17,15,0) 65%); }
+.hero .wrap { position: relative; z-index: 2; padding-block: 0 4.5rem; }
+.hero h1 { margin: 0; }
+.hero h1 img { width: min(640px, 92%); height: auto; filter: drop-shadow(0 6px 24px rgba(0,0,0,.6)); }
+.hero .quote { max-width: 34rem; margin: 1.6rem 0 .4rem; font: 800 italic clamp(24px, 3.3vw, 34px)/1.15 var(--cond); text-transform: uppercase; }
+.hero .quote::before { content: "„"; color: var(--red); }
+.hero .quote::after { content: "”"; color: var(--red); }
+.hero .sub { margin: 0 0 2rem; color: var(--paper); max-width: 34rem; }
+.stamp { position: absolute; right: 6%; top: 22%; z-index: 2; transform: rotate(-12deg); color: var(--red);
+  border: 5px solid currentColor; padding: .6rem 1.2rem; font: 900 clamp(16px, 2.2vw, 26px)/1.1 var(--display); text-align: center;
+  text-transform: uppercase; opacity: .85; box-shadow: inset 0 0 0 2px rgba(208,49,45,.35); }
+.stamp small { display: block; font: 800 italic .62em/1.2 var(--cond); letter-spacing: .12em; }
+@media (max-width: 820px) { .stamp { display: none; } }
+
+/* Store buttons */
+.stores { display: flex; flex-wrap: wrap; gap: .9rem; }
+.store { display: inline-flex; align-items: center; gap: .75rem; padding: .7rem 1.3rem .7rem 1.05rem; min-width: 200px;
+  background: #000; border: 1px solid rgba(239,230,214,.35); border-radius: 10px; text-decoration: none; transition: transform .15s, border-color .15s; }
+.store:hover { transform: translateY(-2px); border-color: var(--cream); }
+.store svg { width: 28px; height: 28px; flex: none; }
+.store span { display: grid; line-height: 1.1; font-size: 12px; text-align: left; }
+.store b { font: 600 20px/1.1 var(--body); letter-spacing: -.01em; }
+
+/* Stats strip */
+.strip { background: var(--red); }
+.strip ul { display: flex; justify-content: space-between; gap: .6rem 1.5rem; margin-block: 0; padding: 1.1rem 0; list-style: none; flex-wrap: wrap; }
+.strip li { font: 800 italic clamp(20px, 2.4vw, 28px)/1 var(--cond); text-transform: uppercase; display: flex; align-items: baseline; gap: .45rem; }
+.strip li b { font: 900 1.2em/1 var(--display); font-style: normal; color: var(--ink); }
+
+/* Section headings */
+section { padding: 6.5rem 0; }
+.kicker { font: 800 italic 20px/1 var(--cond); color: var(--red); text-transform: uppercase; letter-spacing: .08em; margin: 0 0 .9rem; }
+h2 { font: 900 clamp(30px, 4.4vw, 54px)/1.04 var(--display); text-transform: uppercase; margin: 0 0 1.2rem; letter-spacing: -.01em; }
+.lead { color: var(--muted); max-width: 40rem; font-size: 18px; margin: 0; }
+
+/* Feature rows, alternating */
+.feature { display: grid; grid-template-columns: 1.25fr 1fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; margin-top: 5.5rem; }
+.feature.flip { grid-template-columns: 1fr 1.25fr; }
+.feature.flip figure { order: 2; }
+.feature figure { margin: 0; position: relative; isolation: isolate; }
+.feature figure img { width: 100%; aspect-ratio: 16/9; object-fit: cover; box-shadow: 0 30px 60px -20px rgba(0,0,0,.8); }
+.feature figure::after { content: ""; position: absolute; inset: 14px -14px -14px 14px; border: 2px solid var(--red); z-index: -1; }
+.feature.flip figure::after { inset: 14px 14px -14px -14px; }
+.feature h3 { font: 900 clamp(22px, 2.5vw, 32px)/1.1 var(--display); text-transform: uppercase; margin: 0 0 1rem; }
+.feature p { color: var(--muted); margin: 0 0 1rem; }
+.feature ul { margin: 0; padding: 0; list-style: none; }
+.feature li { padding: .3rem 0 .3rem 1.6rem; position: relative; }
+.feature li::before { content: "★"; position: absolute; left: 0; color: var(--red); font-size: 14px; top: .5rem; }
+@media (max-width: 820px) { .feature, .feature.flip { grid-template-columns: 1fr; } .feature.flip figure { order: 0; } }
+
+/* Cars: the waiting list ledger */
+.cars { background: var(--paper); color: var(--ink); position: relative; }
+.cars::before { content: ""; position: absolute; inset: 0; background: url(img/grime.png); opacity: .3; mix-blend-mode: multiply; pointer-events: none; }
+.cars .wrap { position: relative; }
+.cars .lead { color: #4a4038; }
+.ledger { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); column-gap: 2rem; margin: 3rem 0 0; padding: 0;
+  border-top: 3px solid var(--ink); }
+.ledger li { list-style: none; display: grid; grid-template-columns: 3rem 1fr; align-items: center; padding: 1rem .2rem;
+  border-bottom: 1px solid rgba(20,17,15,.25); }
+.ledger .no { font: 800 italic 18px/1 var(--cond); color: var(--red-dark); }
+.ledger b { display: block; font: 900 18px/1.15 var(--display); text-transform: uppercase; }
+.ledger span:not(.no) { font: 600 italic 17px/1.2 var(--cond); color: #5a4f45; text-transform: uppercase; letter-spacing: .03em; }
+.ledger .new b::after { content: "NEW"; margin-left: .5rem; font: 800 italic 13px/1 var(--cond); background: var(--red); color: var(--cream);
+  padding: .15rem .4rem; vertical-align: middle; }
+.wait { margin: 2rem 0 0; font: 800 italic 22px/1.3 var(--cond); text-transform: uppercase; color: var(--red-dark); }
+
+/* Tracks */
+.tracks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 3rem; }
+.track { position: relative; overflow: hidden; aspect-ratio: 16/10; margin: 0; }
+.track img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s; }
+.track:hover img { transform: scale(1.06); }
+.track figcaption { position: absolute; inset: auto 0 0; padding: 2.5rem 1.1rem .9rem; background: linear-gradient(transparent, rgba(20,17,15,.9)); }
+.track b { display: block; font: 900 19px/1.1 var(--display); text-transform: uppercase; }
+.track span { font: 600 italic 17px/1.2 var(--cond); color: var(--muted); text-transform: uppercase; }
+@media (max-width: 900px) { .tracks-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .tracks-grid { grid-template-columns: 1fr; } }
+
+/* Download */
+.download { text-align: center; background: radial-gradient(ellipse at center, #2c1513 0%, var(--ink) 70%); }
+.download .stores { justify-content: center; margin-top: 2rem; }
+.download h2 span { color: var(--red); }
+
+footer { padding: 3rem 0 4rem; border-top: 1px solid rgba(239,230,214,.1); color: var(--muted); font-size: 15px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; align-items: center; justify-content: space-between; }
+footer a { text-decoration: none; margin-left: 1.5rem; }
+footer a:hover { color: var(--cream); }
+
+/* Reveal on scroll */
+.js .reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s ease, transform .8s ease; }
+.js .reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .js .reveal { opacity: 1; transform: none; transition: none; } html { scroll-behavior: auto; } }
 </style>
+<script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
-<main>
-  <h1>Iron Curtain <span>Racing</span></h1>
-  <p>A mobile racing game with the cars of the Eastern Bloc: Lada, Trabant, Wartburg, Dacia and more, on six tracks.</p>
-  <p>For iPhone, iPad and Android.</p>
-</main>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="apple" viewBox="0 0 24 24"><path fill="#fff" d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.02-1.5-2.62-1.7-3.19-1.72-1.36-.14-2.65.8-3.34.8-.69 0-1.75-.78-2.88-.76a4.27 4.27 0 0 0-3.6 2.19c-1.53 2.66-.39 6.6 1.1 8.76.73 1.06 1.6 2.24 2.73 2.2 1.1-.04 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13a9.4 9.4 0 0 0 1.2-2.47 3.85 3.85 0 0 1-2.35-3.54ZM14.2 6.13c.6-.73 1-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.64-1.05 1.67-.92 2.66.97.08 1.96-.49 2.56-1.21Z"/></symbol>
+  <symbol id="play" viewBox="0 0 24 24"><path fill="#00d7fe" d="M3.6 2.3 13.4 12l-9.8 9.7c-.35-.2-.6-.6-.6-1.1V3.4c0-.5.25-.9.6-1.1Z"/><path fill="#ffce00" d="m16.8 8.6 3.4 1.95c.95.55.95 1.35 0 1.9L16.8 14.4 13.4 12l3.4-3.4Z"/><path fill="#ff3a44" d="M16.8 15.4 13.4 12l-9.8 9.7c.35.2.85.2 1.4-.1l11.8-6.2Z"/><path fill="#00f076" d="M16.8 8.6 5 2.4c-.55-.3-1.05-.3-1.4-.1L13.4 12l3.4-3.4Z"/></symbol>
+</svg>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="brand" href="#">Iron Curtain <span>Racing</span></a>
+    <ul>
+      <li><a href="#features">The game</a></li>
+      <li><a href="#cars">Cars</a></li>
+      <li><a href="#tracks">Tracks</a></li>
+    </ul>
+    <a class="cta" href="#download">Play free</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <img src="img/hero.jpg" alt="A red coupé at the bottom of a famous Belgian climb" fetchpriority="high">
+  <div class="stamp">Approved<small>for racing</small></div>
+  <div class="wrap">
+    <h1><img src="img/wordmark.png" alt="Iron Curtain Racing" width="1400" height="303"></h1>
+    <p class="quote">Comrade, your car is finally here, after only fifteen years on the waiting list.</p>
+    <p class="sub">Race the people's cars of the Eastern Bloc, from Lada and Volga to Trabant, Wartburg and Dacia, on six tracks across Europe. Free on iPhone, iPad and Android.</p>
+    <div class="stores">
+      <a class="store" href="https://apps.apple.com/app/id1069721882"><svg><use href="#apple"/></svg><span>Download on the<b>App Store</b></span></a>
+      <a class="store" href="https://play.google.com/store/apps/details?id=com.attiladan.icr"><svg><use href="#play"/></svg><span>Get it on<b>Google Play</b></span></a>
+    </div>
+  </div>
+</header>
+
+<div class="strip">
+  <ul class="wrap">
+    <li><b>17</b> cars</li>
+    <li><b>6</b> tracks</li>
+    <li><b>54</b> goals</li>
+    <li>Sun, rain &amp; snow</li>
+    <li>Your own dyno</li>
+  </ul>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <p class="kicker reveal">Five-year plan for speed</p>
+    <h2 class="reveal">Real cars.<br>Unreal ambitions.</h2>
+    <p class="lead reveal">The family cars your parents queued years for, now with a roll cage, wide tyres and an engine that was never in any official plan.</p>
+
+    <div class="feature reveal">
+      <figure><img src="img/side.jpg" alt="A blue Lada with a yellow roll cage on the grid" loading="lazy"></figure>
+      <div>
+        <h3>Build it in the garage</h3>
+        <p>Every car starts on the lift in a backstreet garage. Tune it, paint it, make it yours.</p>
+        <ul>
+          <li>Tune the engine on the dyno and watch the power curve move</li>
+          <li>Paint, stickers, race numbers and ready-made liveries</li>
+          <li>Tyres, helmets and lucky charms that swing from the mirror</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feature flip reveal">
+      <figure><img src="img/cockpit.jpg" alt="The driver's view inside a Lada with a roll cage" loading="lazy"></figure>
+      <div>
+        <h3>Feel every kerb</h3>
+        <p>Real car physics, with an Arcade mode for fun and a Simulation mode for purists. Drive from the chase cam, the bonnet or from behind the wheel.</p>
+        <ul>
+          <li>Tilt, buttons or an on-screen steering wheel</li>
+          <li>Haptics that rumble over the kerbs</li>
+          <li>Cars that dent, scratch and crack their glass</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feature reveal">
+      <figure><img src="img/rain.jpg" alt="A Lada on a wet straight in the rain" loading="lazy"></figure>
+      <div>
+        <h3>Then the weather turns</h3>
+        <p>Race the circuits in summer sun or pouring rain: spray off the wheels, drops on the glass and thunder over the grandstands. The hillclimb is always under snow.</p>
+      </div>
+    </div>
+
+    <div class="feature flip reveal">
+      <figure><img src="img/garage-ui.jpg" alt="The garage menu with the photo mode" loading="lazy"></figure>
+      <div>
+        <h3>Missions, goals and photos</h3>
+        <p>Every track has its missions: beat the clock, win the sprint, hit the targets. Fifty-four goals, with leaderboards on Game Center and Google Play Games.</p>
+        <ul>
+          <li>A daily challenge and a gift every day</li>
+          <li>Photo mode on the track and in the garage</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cars" class="cars">
+  <div class="wrap">
+    <p class="kicker reveal">The waiting list</p>
+    <h2 class="reveal">17 cars.<br>No queue.</h2>
+    <p class="lead reveal">From the two-stroke Trabant to a Volga with a race engine. Unlock them one by one, as the state intended.</p>
+    <ol class="ledger reveal">
+      <li><span class="no">01</span><div><b>VFTS</b><span>Lada rally legend</span></div></li>
+      <li><span class="no">02</span><div><b>VGA</b><span>Volga saloon</span></div></li>
+      <li><span class="no">03</span><div><b>WARNYU</b><span>Wartburg two-stroke</span></div></li>
+      <li><span class="no">04</span><div><b>RS1000</b><span>Melkus sports car</span></div></li>
+      <li><span class="no">05</span><div><b>G0Mb0S</b><span>The button-eyed one</span></div></li>
+      <li><span class="no">06</span><div><b>RAPID</b><span>Škoda coupé</span></div></li>
+      <li><span class="no">07</span><div><b>ZAPI</b><span>Zaporozhets</span></div></li>
+      <li><span class="no">08</span><div><b>Zasta</b><span>Zastava</span></div></li>
+      <li><span class="no">09</span><div><b>T800</b><span>Trabant 800 RS</span></div></li>
+      <li><span class="no">10</span><div><b>KTR</b><span>Trabant estate</span></div></li>
+      <li><span class="no">11</span><div><b>KisPolák</b><span>Polski Fiat 126p</span></div></li>
+      <li><span class="no">12</span><div><b>Turbo Donkey</b><span>Dacia with a turbo</span></div></li>
+      <li><span class="no">13</span><div><b>Favorit</b><span>Škoda hatchback</span></div></li>
+      <li class="new"><span class="no">14</span><div><b>VGA-K</b><span>Volga estate, race engine</span></div></li>
+      <li class="new"><span class="no">15</span><div><b>Monster Caravan</b><span>Dacia estate, race engine</span></div></li>
+      <li class="new"><span class="no">16</span><div><b>ROCKSWITCH</b><span>Soviet van, 400 hp</span></div></li>
+      <li><span class="no">17</span><div><b>Monster</b><span>The Dacia that started it all</span></div></li>
+    </ol>
+    <p class="wait reveal">Estimated delivery: now.</p>
+  </div>
+</section>
+
+<section id="tracks">
+  <div class="wrap">
+    <p class="kicker reveal">Across the border</p>
+    <h2 class="reveal">Six tracks.<br>No visa needed.</h2>
+    <p class="lead reveal">Five circuits from the old European calendar and a mountain hillclimb, each with its own sun, crowd and gravel traps.</p>
+    <div class="tracks-grid">
+      <figure class="track reveal"><img src="img/hungary.jpg" alt="GulasRing" loading="lazy"><figcaption><b>GulasRing</b><span>Hungary</span></figcaption></figure>
+      <figure class="track reveal"><img src="img/belgium.jpg" alt="ChocolateRing" loading="lazy"><figcaption><b>ChocolateRing</b><span>Belgium</span></figcaption></figure>
+      <figure class="track reveal"><img src="img/italy.jpg" alt="Swear Master" loading="lazy"><figcaption><b>Swear Master</b><span>Italy</span></figcaption></figure>
+      <figure class="track reveal"><img src="img/austria.jpg" alt="HastaLaRing" loading="lazy"><figcaption><b>HastaLaRing</b><span>Austria</span></figcaption></figure>
+      <figure class="track reveal"><img src="img/germany.jpg" alt="BierRaceTrack" loading="lazy"><figcaption><b>BierRaceTrack</b><span>Germany</span></figcaption></figure>
+      <figure class="track reveal"><img src="img/hillclimb.jpg" alt="Hillclimb" loading="lazy"><figcaption><b>Hillclimb</b><span>In the snow</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section id="download" class="download">
+  <div class="wrap">
+    <p class="kicker reveal">Your car is ready</p>
+    <h2 class="reveal">Collect it <span>today</span></h2>
+    <p class="lead reveal" style="margin-inline:auto">Free to play on iPhone, iPad and Android.</p>
+    <div class="stores reveal">
+      <a class="store" href="https://apps.apple.com/app/id1069721882"><svg><use href="#apple"/></svg><span>Download on the<b>App Store</b></span></a>
+      <a class="store" href="https://play.google.com/store/apps/details?id=com.attiladan.icr"><svg><use href="#play"/></svg><span>Get it on<b>Google Play</b></span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© Iron Curtain Racing. Made in Hungary.</div>
+    <div><a href="#features">The game</a><a href="#cars">Cars</a><a href="#tracks">Tracks</a></div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.querySelector(".top");
+  const onScroll = () => nav.classList.toggle("solid", scrollY > 40);
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .12 });
+  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+</script>
 </body>
 </html>
