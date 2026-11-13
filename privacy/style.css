@@ -1,0 +1,63 @@
+/* The privacy policy's pages (privacy/ and privacy/hu/): the home page's colours and type, set for reading */
+@font-face { font-family: "Unbounded"; src: url(../fonts/Unbounded-Black.ttf) format("truetype"); font-weight: 900; font-display: swap; }
+@font-face { font-family: "Barlow Condensed"; src: url(../fonts/BarlowCondensed-ExtraBoldItalic.ttf) format("truetype"); font-weight: 800; font-style: italic; font-display: swap; }
+@font-face { font-family: "Barlow Condensed"; src: url(../fonts/BarlowCondensed-SemiBoldItalic.ttf) format("truetype"); font-weight: 600; font-style: italic; font-display: swap; }
+@font-face { font-family: "Golos Text"; src: url(../fonts/GolosText-Regular.ttf) format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Golos Text"; src: url(../fonts/GolosText-SemiBold.ttf) format("truetype"); font-weight: 600; font-display: swap; }
+
+:root {
+  color-scheme: dark;
+  --red: #d0312d; --cream: #efe6d6; --paper: #e6dcc7; --ink: #14110f;
+  --muted: #b9ad98;
+  --display: "Unbounded", Impact, sans-serif;
+  --cond: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --body: "Golos Text", -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--ink); color: var(--cream); font: 400 17px/1.65 var(--body); }
+a { color: inherit; }
+.wrap { width: min(46rem, 100% - 2rem); margin-inline: auto; }
+
+/* Grain over everything, as on the home page */
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 50;
+  background: url(../img/grime.png); opacity: .06; mix-blend-mode: overlay; }
+
+/* Navigation */
+.top { position: sticky; top: 0; z-index: 40; background: rgba(20,17,15,.92); backdrop-filter: blur(6px);
+  box-shadow: 0 1px 0 rgba(239,230,214,.08); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 64px; }
+.top .brand { white-space: nowrap; font: 900 15px/1 var(--display); letter-spacing: .02em; text-decoration: none; text-transform: uppercase; }
+.top .brand span { color: var(--red); }
+.lang { display: flex; gap: 1.2rem; }
+.lang a { font: 600 italic 19px/1 var(--cond); text-transform: uppercase; letter-spacing: .04em; text-decoration: none; opacity: .7;
+  padding: .5rem 0; }
+.lang a:hover { opacity: 1; color: var(--red); }
+.lang a[aria-current] { opacity: 1; box-shadow: inset 0 -2px 0 var(--red); }
+@media (max-width: 420px) { .top .brand { font-size: 12px; } .lang { gap: .9rem; } }
+
+/* The document */
+main { padding: 4rem 0 5rem; }
+.kicker { font: 800 italic 20px/1 var(--cond); color: var(--red); text-transform: uppercase; letter-spacing: .08em; margin: 0 0 .9rem; }
+h1 { font: 900 clamp(28px, 6vw, 46px)/1.06 var(--display); text-transform: uppercase; letter-spacing: -.01em; margin: 0 0 1rem;
+  overflow-wrap: anywhere; }
+.updated { margin: 0 0 2.5rem; font: 600 italic 19px/1.2 var(--cond); text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.intro { font-size: 18px; color: var(--paper); padding-left: 1.1rem; border-left: 3px solid var(--red); }
+h2 { font: 900 clamp(17px, 2.6vw, 21px)/1.2 var(--display); text-transform: uppercase; margin: 2.8rem 0 .8rem; }
+p { margin: 0 0 1rem; }
+main p, main li { color: var(--paper); }
+main a { text-decoration: underline; text-decoration-color: var(--red); text-underline-offset: .18em; overflow-wrap: anywhere; }
+main a:hover { color: #fff; }
+dl { margin: 0 0 1rem; }
+dt { font-weight: 600; color: var(--cream); margin-top: .7rem; }
+dd { margin: 0; color: var(--paper); }
+
+footer { padding: 2.5rem 0 3.5rem; border-top: 1px solid rgba(239,230,214,.1); color: var(--muted); font-size: 15px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: .8rem 2rem; align-items: center; justify-content: space-between; }
+footer a { text-decoration: none; }
+footer a:hover { color: var(--cream); }
+
+@media print {
+  body { background: #fff; color: #000; }
+  body::after, .top, footer { display: none; }
+  main p, main li, dd, dt, .intro, .updated { color: #000; }
+}
